@@ -34,7 +34,7 @@ void pg9616::init(void)
     i2cinit.I2C_DutyCycle = I2C_DutyCycle_2; //using 16_9 makes display corruption worse, perhaps we are clocking in on the wrong edge?
     i2cinit.I2C_Ack = I2C_Ack_Disable;
     i2cinit.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
-    i2cinit.I2C_ClockSpeed = 400000; //1200000 max but using 1200000 is probably not too wise
+    i2cinit.I2C_ClockSpeed = 100000; //1200000 max but using 1200000 is probably not too wise
     i2cinit.I2C_OwnAddress1 = 0x0000; //why do i care?
 
     I2C_Init(i2cdev, &i2cinit);

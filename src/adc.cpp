@@ -12,7 +12,6 @@ extern "C" {
 
 #include "adc.hpp"
 #include "types.hpp"
-#include "pwm.hpp"
 #include <math.h>
 
 const float adc::temp_coeffs[7][2] = {{37.4392, -4.7173}, //oil pressure, [10-180]ohms = [0-80]PSI, 12.6mA, so [0.1260-2.2628]V = [0-80]PSI

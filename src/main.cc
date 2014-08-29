@@ -98,13 +98,15 @@ int main(void) {
     float filtered_voltage = temps[4];
 
     const char degreestring[] = {0x8E, 'C', 0x00};
+    volatile uint32_t thisrpm=7000;
+    volatile float needlescalar=14750;
 
     while (1) /* MAIN LOOP WAHOOOOOOOO MAIN LOOP */
     {
         //pointer.seek(rpm.get_rpm() / 20000.0);
         //pointer.seek(i++/14679);
-        uint32_t thisrpm = rpm.get_rpm();
-        pointer.seek(thisrpm/14679.0);
+//        thisrpm = rpm.get_rpm();
+        pointer.seek(thisrpm/needlescalar);
 
         adc1.get_temps(temps);
         filtered_voltage = filtered_voltage - voltage_iir_gain*(filtered_voltage-temps[4]);

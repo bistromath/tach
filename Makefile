@@ -5,7 +5,7 @@ COMPILE_OPTS = \
 	-mcpu=cortex-m3 \
 	-Wall \
 	-g \
-	-O0 \
+	-O2 \
 	-msoft-float \
 	-ffunction-sections \
 	-D__thumb2__ \
@@ -15,6 +15,7 @@ COMPILE_OPTS = \
 	-mthumb-interwork \
 	-mfix-cortex-m3-ldrd \
 	-mabi=aapcs \
+	-fno-optimize-sibling-calls \
 	-DDEBUG
 
 INCLUDE_DIRS = \
