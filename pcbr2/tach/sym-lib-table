@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name tach)(type Legacy)(uri /home/nick/dev/tach/pcbr2/tach/tach.lib)(options "")(descr ""))
+)
