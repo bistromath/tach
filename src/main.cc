@@ -7,6 +7,7 @@ extern "C" {
 #include "stm32f10x.h"
 #include "stm32f10x_conf.h"
 #include "misc.h"
+#include "math.h"
 #include <stdlib.h>
 }
 
@@ -53,39 +54,73 @@ void NVIC_Configuration();
 
 void fail(void);
 
-u8 current_disp = 2;
+//which info screen is currently active
+u8 current_disp = 0;
+
+//filter constants
 const float voltage_iir_gain = 0.1;
+const float temp_iir_gain = 0.02;
+const float rpm_iir_gain = 0.1;
+
+//tach calibration
+const uint32_t needlescalar=14800;
 
 /* PIN DEFINITIONS */
 const pindef stepper::outputs[] = {
-            {GPIOA, GPIO_Pin_8},
-            {GPIOA, GPIO_Pin_9},
+            {GPIOA, GPIO_Pin_11},
             {GPIOA, GPIO_Pin_10},
-            {GPIOA, GPIO_Pin_11}
+            {GPIOA, GPIO_Pin_9},
+            {GPIOA, GPIO_Pin_8}
 };
 
 const pindef stepper::enables[] = {
             {GPIOB, GPIO_Pin_12},
-            {GPIOB, GPIO_Pin_13},
-            {GPIOB, GPIO_Pin_14},
-            {GPIOB, GPIO_Pin_15}
 };
-const pindef pg9616::resetpin = {GPIOB, GPIO_Pin_1};
-const pindef adc::adcpins = {GPIOA, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4};
-/******************/
+
+const pindef pg9616::resetpin = {GPIOB, GPIO_Pin_2};
+const pindef adc::adcpins = {GPIOA, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3};
+
+
+/* voltage conversion functions
+ * these convert the sensor voltages to outputs.
+*/
+/*******************************/
+float conv_batt_volt(float voltage) {
+    return 4.9705*voltage;
+}
+
+//christ can you imagine how long this takes to run
+//this outputs deg C
+float conv_cold_junc_temp(float voltage) {
+    return -1481.96+sqrt(2.1962e6+((1.8639-(voltage-0.00))/3.88e-6));
+}
+
+//this outputs deg F, since it's used directly for display
+float conv_oil_temp(float voltage) {
+    return 144.796*pow(voltage, -0.3163449);
+}
+
+//note: this does not compensate for cold junction temp.
+//the output of this is deg C.
+//50uV/deg C
+//gain of thermocouple amplifier is 151
+//so, 7550uV/deg C
+//this gets us up to ~400C before we saturate
+//we could probably increase the gain some, if we
+//wanted better resolution.
+float conv_cht(float voltage) {
+    return voltage/0.00755;
+}
+/*******************************/
+
 
 int main(void) {
     RCC_Configuration(); //initialize reset and clock control module, including applying power to hardware modules
-    NVIC_Configuration(); //intialize interrupts
+    //NVIC_Configuration(); //intialize interrupts
 
     systick tick;
     tick.init_hardware();
 
-    //buttons is3buttons;
-
-    delay_us(100); //apparently you gotta let the buttons settle or something.
-
-    pg9616 disp(I2C2); //MUST happen after systick is initialized! uses delay_ms()!
 
     stepper pointer;
 
@@ -93,36 +128,56 @@ int main(void) {
     tachobjptr = &rpm;
 
     adc adc1;
-    float temps[7];
-    adc1.get_temps(temps);
-    float filtered_voltage = temps[4];
+    adc1.reg_converter(0, &conv_batt_volt);
+    adc1.reg_converter(1, &conv_oil_temp);
+    adc1.reg_converter(2, &conv_cht);
+    adc1.reg_converter(3, &conv_cold_junc_temp);
 
-    const char degreestring[] = {0x8E, 'C', 0x00};
-    volatile uint32_t thisrpm=7000;
-    volatile float needlescalar=14750;
+    systick disp_timer;
+    disp_timer.start();
+
+    const char degreestring[] = {0x8E, 'F', 0x00};
+    uint32_t thisrpm=0;
+    float filtered_rpm=0;
+    float filtered_voltage=adc1.get_value(0);
+    float filtered_oil_temp=adc1.get_value(1);
+    float filtered_coldjunc_temp=adc1.get_value(3);
+    float filtered_cht=adc1.get_value(2);
+    float cht;
+
+    pg9616 disp(I2C2); //MUST happen after systick is initialized! uses delay_ms()!
 
     while (1) /* MAIN LOOP WAHOOOOOOOO MAIN LOOP */
     {
-        //pointer.seek(rpm.get_rpm() / 20000.0);
-        //pointer.seek(i++/14679);
-//        thisrpm = rpm.get_rpm();
-        pointer.seek(thisrpm/needlescalar);
+        thisrpm = rpm.get_rpm();
+        if(thisrpm < 350) thisrpm = 0;
 
-        adc1.get_temps(temps);
-        filtered_voltage = filtered_voltage - voltage_iir_gain*(filtered_voltage-temps[4]);
+        //moving avg filter for sensors
+        filtered_rpm = filtered_rpm - rpm_iir_gain*(filtered_rpm-thisrpm);
+        filtered_voltage = filtered_voltage - voltage_iir_gain*(filtered_voltage-adc1.get_value(0));
+        filtered_oil_temp = filtered_oil_temp - temp_iir_gain*(filtered_oil_temp-adc1.get_value(1));
+        filtered_coldjunc_temp = filtered_coldjunc_temp - temp_iir_gain*(filtered_coldjunc_temp-adc1.get_value(3));
+        filtered_cht = filtered_cht - temp_iir_gain*(filtered_cht-adc1.get_value(2));
+        cht = (filtered_cht+filtered_coldjunc_temp)*9/5 + 32;
+
+        pointer.seek(filtered_rpm*stepper::max_position/needlescalar);
 
         switch(current_disp) {
         case 0:
-            disp.print(0, int(temps[3] + temps[2]), Font_Large, 3, 0, 0);
-            disp.print(0, degreestring, Font_Small, 0, 5);
-            disp.print(0, "CHT", Font_Small, 1, 5);
-            disp.print(0, int(temps[0]), Font_Large, 2, 0, 5);
-            disp.print(0, "OIL", Font_Small, 0, 12);
-            disp.print(0, "PSI", Font_Small, 1, 12);
+            if(filtered_oil_temp < 120) {
+                disp.print(0, "---", Font_Large, 0, 0, 0);
+            } else {
+                disp.print(0, round(filtered_oil_temp), Font_Large, 3, 0, 0);
+            }
+            disp.print(0, degreestring, Font_Small, 0, 5, -1);
+            disp.print(0, "OIL", Font_Small, 1, 5, 0);
+            disp.print(0, round(cht), Font_Large, 3, 0, 5);
+            disp.print(0, degreestring, Font_Small, 0, 13, 1);
+            disp.print(0, "CHT", Font_Small, 1, 13, 2);
             break;
         case 1:
             disp.print(0, "RPM", Font_Large, 0, 6);
-            disp.print(0, thisrpm, Font_Large, 0x05, 0x00, 0x00);
+            disp.print(0, round(filtered_rpm), Font_Large, 0x05, 0x00, 0x00);
             break;
         case 2:
             disp.print(0, filtered_voltage, Font_Large, 5, 0, 2, false, 2);
@@ -134,6 +189,17 @@ int main(void) {
         }
 
         disp.update(); //update all displays at the end of each cycle
+        delay_ms(10);
+
+        if(disp_timer.get_elapsed_ms() > 2000) {
+            disp_timer.stop();
+            disp_timer.reset();
+            disp_timer.start();
+            disp.clear();
+            current_disp = current_disp==0 ? 2 : 0;
+            //thisrpm = thisrpm + 1000;
+            //if(thisrpm > 12000) thisrpm = 0;
+        }
     }
 
     //EXECUTION WILL NEVER REACH THIS POINT
@@ -161,60 +227,7 @@ extern "C" void debug_write(char* str, int len) {
 	serialobjptr->send(str, len);
 }
 
-/*******************************************************************************
- * Function Name  : RCC_Configuration
- * Description    : Configures the different system clocks.
- * Input          : None
- * Output         : None
- * Return         : None
- *******************************************************************************/
 void RCC_Configuration(void) {
-    ErrorStatus HSEStartUpStatus;
-    /* RCC system reset(for debug purpose) */
-    RCC_DeInit();
-
-    /* Enable HSE */
-    RCC_HSEConfig(RCC_HSE_ON); //16MHz xtal
-
-    /* Wait till HSE is ready */
-
-    HSEStartUpStatus = RCC_WaitForHSEStartUp();
-    while(RCC_WaitForHSEStartUp() != SUCCESS);
-
-    if (HSEStartUpStatus == SUCCESS) {
-        /* Enable Prefetch Buffer */
-        FLASH_PrefetchBufferCmd(FLASH_PrefetchBuffer_Enable);
-
-        /* Flash 2 wait state */
-        FLASH_SetLatency(FLASH_Latency_2);
-
-        /* HCLK = SYSCLK */
-        RCC_HCLKConfig(RCC_SYSCLK_Div1);
-
-        /* PCLK2 = HCLK, max 72MHz */
-        RCC_PCLK2Config(RCC_HCLK_Div1);
-
-        /* PCLK1 = HCLK/2, max 36MHz */
-        RCC_PCLK1Config(RCC_HCLK_Div2);
-
-        /* PLLCLK = 8MHz * 9 = 72 MHz */
-        /* We're using a 16MHz clock, so we div by 2 and then mul by 9 to get 72MHz */
-//        RCC_PLLConfig(RCC_PLLSource_HSE_Div2, RCC_PLLMul_9);
-
-        /* Enable PLL */
-//        RCC_PLLCmd(ENABLE);
-
-        /* Wait till PLL is ready */
-//        while (RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET) {
-//        }
-
-        /* Select PLL as system clock source */
-//        RCC_SYSCLKConfig(RCC_SYSCLKSource_PLLCLK);
-
-        /* Wait till PLL is used as system clock source */
-//        while (RCC_GetSYSCLKSource() != 0x08);
-        RCC_SYSCLKConfig(RCC_SYSCLKSource_HSE);
-    }
     /* Enable peripheral clocks */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
@@ -248,27 +261,6 @@ void RCC_Configuration(void) {
     //RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART1, DISABLE); //gimme that pin back!
     //RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, DISABLE);
     //RCC_APB1PeriphClockCmd(RCC_APB1Periph_CAN, DISABLE);
-}
-
-/*******************************************************************************
- * Function Name  : NVIC_Configuration
- * Description    : Configures Vector Table base location.
- * Input          : None
- * Output         : None
- * Return         : None
- *******************************************************************************/
-void NVIC_Configuration(void) {
-    extern unsigned long _start;
-#ifdef  VECT_TAB_RAM
-    /* Set the Vector Table base location at 0x20000000 */
-    NVIC_SetVectorTable(NVIC_VectTab_RAM, 0x0);
-#else  /* VECT_TAB_FLASH  */
-    /* Set the Vector Table base location at 0x08000000 */
-    NVIC_SetVectorTable(NVIC_VectTab_FLASH, u32(&_start) - 0x08000000);
-#endif
-    /*
-        NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-        */
 }
 
 void fail(void) { //a catch-all error handler
