@@ -1,5 +1,5 @@
-(module X27.589 (layer F.Cu) (tedit 5E67F91D)
-  (fp_text reference REF** (at 0 2.54) (layer F.SilkS)
+(module X27.589 locked (layer F.Cu) (tedit 5E900E65)
+  (fp_text reference U10 (at -4.953 21.082) (layer F.SilkS) hide
     (effects (font (size 1 1) (thickness 0.15)))
   )
   (fp_text value X27.589 (at 0 5.08) (layer F.Fab)
@@ -19,4 +19,6 @@
   (pad 2 thru_hole circle (at 11.43 9.81) (size 2 2) (drill 1.1) (layers *.Cu *.Mask))
   (pad 3 thru_hole circle (at -11.43 9.81) (size 2 2) (drill 1.1) (layers *.Cu *.Mask))
   (pad 4 thru_hole circle (at -11.43 2.19) (size 2 2) (drill 1.1) (layers *.Cu *.Mask))
+  (pad "" np_thru_hole circle (at -8.455 -2.43) (size 3 3) (drill 3) (layers *.Cu *.Mask))
+  (pad "" np_thru_hole circle (at 8.455 -2.43) (size 3 3) (drill 3) (layers *.Cu *.Mask))
 )

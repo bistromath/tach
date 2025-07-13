@@ -122,17 +122,16 @@ void pg9616::Show_Pattern(u8 display, const unsigned char Data_Pointer[][2], uns
 //	memcpy(&printbuf[display][start_page+1][start_col], &Data_Pointer[0][1], width);
 }
 
-void pg9616::print(u8 display, const char *string, Display_FontSizeTypeDef font, u8 line, u8 start_pos)
+void pg9616::print(u8 display, const char *string, Display_FontSizeTypeDef font, u8 line, u8 start_pos, s8 offset)
 {
 	//this version will print to a buffer instead of printing in real-time. the buffer gets diff'ed with the current screen and sent by calling ::update().
 	//we are not invoking sprintf() because it's huge and it sucks.
 	//DO NOT FORGET TO CALL THIS WITH A NULL-TERMINATED STRING! Const strings are null-terminated by the compiler.
 	u8 i = 0;
-
-	switch(font) {
+    switch(font) {
 	default:
 	case Font_Small:
-		i = start_pos * (FONT_SMALL_WIDTH+1);
+		i = start_pos * (FONT_SMALL_WIDTH+1)+offset;
 		while(*string) {
 			for(int j=0; j < FONT_SMALL_WIDTH; j++) {
 				printbuf[display][line][i+j] = smallfont[*string-32][j];
@@ -140,7 +139,7 @@ void pg9616::print(u8 display, const char *string, Display_FontSizeTypeDef font,
 			printbuf[display][line][i+FONT_SMALL_WIDTH] = 0x00;
 			i += FONT_SMALL_WIDTH + 1;
 			string++;
-		}// while(*(string++));
+		}
 		break;
 
 	case Font_Large:
@@ -156,7 +155,7 @@ void pg9616::print(u8 display, const char *string, Display_FontSizeTypeDef font,
 			}
 			i += FONT_LARGE_WIDTH + FONT_LARGE_CHAR_SPACING;
 			string++;
-		}// while(*(string++));
+		}
 		break;
 	}
 }
@@ -164,7 +163,7 @@ void pg9616::print(u8 display, const char *string, Display_FontSizeTypeDef font,
 void pg9616::update(u8 display) {
 	//this does diffs against the last sent screens, and sends required data out to the display.
 	u8 txbuffer[99];
-	u8 txpos = 0;
+	u8 txpos = 0x00;
 	u8 current_page = 0xFF;
 	u8 current_display = 0xFF;
 	//select(display);
@@ -174,29 +173,26 @@ void pg9616::update(u8 display) {
 			//diffs[i][j][k] = printbuf[i][j][k] ^ dblbuf[i][j][k];
 			if(printbuf[display][k][j] != dblbuf[display][k][j]) { //if there's a difference between the current print buffer and the last sent buffer at this column
 				if(txpos == 0) { //this means this is the first in a series of contiguous differences
-					if(current_display != display) { //we'll select() the proper display since we'll have to send data, avoids unnecessary select() calls
-						select(display);
-						current_display = display;
-					}
+					//if(current_display != display) { //we'll select() the proper display since we'll have to send data, avoids unnecessary select() calls
+					//	select(display);
+					//	current_display = display;
+					//}
 					if(current_page != k) {
 						Set_Start_Page(k);
 						current_page = k;
 					}
 					Set_Start_Column(j); //set a start column for the txbuffer
 				}
-				//Write_Data(printbuf[display][j][k], 1); //TODO: actually, this is incredibly wasteful, since it doesn't allow for contiguous writes, and cuts bandwidth by half
 				txbuffer[txpos++] = printbuf[display][k][j];
 			} else {
 				if(txpos != 0) { //there's data to send
 					//here we send data
-					txbuffer[txpos] = 0x00;
 					Write_Data(txbuffer, txpos);
 					txpos = 0;
 				}
 			}
 		}
 		if(txpos != 0) { //takes care of the tail case where printbuf[x][96][x] != dblbuf[x][96][x]
-			txbuffer[txpos] = 0x00;
 			Write_Data(txbuffer, txpos);
 			txpos = 0;
 		}
@@ -212,7 +208,7 @@ void pg9616::update(void){
 	}
 }
 
-void pg9616::print(u8 display, float number, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col, bool plusminus, u8 max_decimals)
+void pg9616::print(u8 display, float number, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col, bool plusminus, u8 max_decimals, s8 offset)
 {
 	char str[20];
 	unsigned char index, i=0;
@@ -287,15 +283,15 @@ void pg9616::print(u8 display, float number, Display_FontSizeTypeDef font, u8 wi
 		decimal = decimal - int(decimal);
 	}
 	str[i] = 0x00;
-	print(display, str, font, start_page, start_col);
+	print(display, str, font, start_page, start_col, offset);
 }
 
-void pg9616::print(u8 display, signed long number, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col)
+void pg9616::print(u8 display, signed long number, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col, s8 offset)
 {
-	print_base(display, number, 10, font, width, start_page, start_col);
+	print_base(display, number, 10, font, width, start_page, start_col, offset);
 }
 
-void pg9616::print_base(u8 display, signed long number, u8 base, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col)
+void pg9616::print_base(u8 display, signed long number, u8 base, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col, s8 offset)
 {
 	char str[10];
 	u8 digits=0;
@@ -316,7 +312,7 @@ void pg9616::print_base(u8 display, signed long number, u8 base, Display_FontSiz
 		str[--temp] = ' ';
 	}
 
-	print(display, str, font, start_page, start_col);
+	print(display, str, font, start_page, start_col, offset);
 
 }
 

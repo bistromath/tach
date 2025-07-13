@@ -18,22 +18,24 @@ extern "C" {
 
 class adc {
 public:
-	adc(void) { init(); }
+    typedef float (*convert_t)(float); //prototype for conversion functions
 
-	void get_temps(float temps[7]);
+    adc(void) { init(); }
 
-	const static float temp_coeffs[7][2];
+    float get_voltage(u8 channel);
+    float get_value(u8 channel);
 
+    void reg_converter(u8 channel, convert_t converter);
 
 private:
-	static const u8 num_channels = 7;
-	static const u8 num_conversions = 100;
+    static const u8 num_channels = 7;
+    static const u8 num_conversions = 10;
+    static const pindef adcpins;
+    volatile u16 conversion_array[num_conversions * num_channels];
 
-	static const pindef adcpins;
+    convert_t converters[num_channels];
 
-	volatile u16 conversion_array[num_conversions * num_channels];
-
-	void init();
+    void init();
 };
 
 #endif /* ADC_HPP_ */

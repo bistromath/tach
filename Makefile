@@ -1,20 +1,18 @@
 # setup
 # DO NOT USE -Os UNLESS YOU ALSO PREVENT STRUCT PACKING
 COMPILE_OPTS = \
-	-mthumb \
-	-mcpu=cortex-m3 \
-	-Wall \
-	-g \
-	-O2 \
-	-msoft-float \
-	-ffunction-sections \
 	-D__thumb2__ \
 	-DSTM32F10X_MD \
 	-DHSE_VALUE=16000000 \
-	-DSYSCLK_FREQ_72MHz \
-	-mthumb-interwork \
+	-Wall \
+	-g \
+	-O0 \
+	-mthumb \
+	-mcpu=cortex-m3 \
+	-msoft-float \
 	-mfix-cortex-m3-ldrd \
 	-mabi=aapcs \
+	-ffunction-sections \
 	-fno-optimize-sibling-calls \
 	-DDEBUG
 
@@ -28,8 +26,6 @@ LIBRARY_DIRS = \
 	-L newlib \
 	-L newlib/CMSIS/CM3/DeviceSupport/ST/STM32F10x \
 	-L usblib
-
-#LIBRARY_DIRS = -L lib -L /home/bistromath/Desktop/arm-2008q1/arm-none-eabi/lib
 
 CC = arm-none-eabi-gcc
 CFLAGS = $(COMPILE_OPTS) $(INCLUDE_DIRS) -include inc/stm32f10x_conf.h

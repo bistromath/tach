@@ -87,7 +87,7 @@ private:
 
 
 	static const u8 numctrs = 10;
-	static const u32 preload = 9000;
+	static const u32 preload = 8000; //it's div8, so 8MHz, so 1ms would be 8000
 
 	u32 ms_counter;
 	u32 us_counter;

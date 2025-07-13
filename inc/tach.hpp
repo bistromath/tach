@@ -30,7 +30,7 @@ public:
 	void irq_handler(void); //called by the CC interrupt on TIM3
 
 private:
-	const static uint16_t numavg = 4;
+	const static uint16_t numavg = 5;
 	uint16_t averages[tach::numavg];
     uint32_t ticksperminute;
     uint32_t blanking;

@@ -1,6 +1,5 @@
 EESchema Schematic File Version 4
-LIBS:tach-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A3 16535 11693
 encoding utf-8
@@ -58,8 +57,6 @@ F 3 "" H 4100 5650 50  0001 C CNN
 	1    4100 5650
 	1    0    0    -1  
 $EndComp
-Text Notes 6350 10850 0    50   ~ 0
-Changelist:\nLarger holes for wires\nUse 2x5 Samtec 0.5" header ARM standard JTAG\nFull input protection e.g. X310\nReview and fix mounting hole spacing/dia\nLarger heatsink pad for regulators\nReview ADC pins
 $Comp
 L Regulator_Linear:LM2937xMP U5
 U 1 1 5E64DDC9
@@ -140,8 +137,6 @@ $EndComp
 Wire Wire Line
 	13600 6050 13600 6200
 Wire Wire Line
-	11600 5200 12500 5200
-Wire Wire Line
 	11600 5000 12300 5000
 $Comp
 L Device:C C33
@@ -206,23 +201,13 @@ STEPPER4
 Text Label 11750 5100 0    50   ~ 0
 STEPPER3
 Text Label 11750 5200 0    50   ~ 0
-STEPPER2
-Text Label 11750 5300 0    50   ~ 0
 STEPPER1
+Text Label 11750 5400 0    50   ~ 0
+STEPPER2
 Wire Wire Line
 	12600 3950 12600 4650
 Wire Wire Line
 	12600 3950 13600 3950
-Wire Wire Line
-	12500 5300 12500 5800
-Wire Wire Line
-	12500 5800 13300 5800
-Wire Wire Line
-	12500 5300 11600 5300
-Wire Wire Line
-	12500 5200 12500 5100
-Wire Wire Line
-	12500 5100 13300 5100
 Wire Wire Line
 	12400 5100 12400 4400
 Wire Wire Line
@@ -233,7 +218,7 @@ Wire Wire Line
 	12300 5000 12300 3700
 Wire Wire Line
 	12300 3700 13300 3700
-Text Label 9700 5400 0    50   ~ 0
+Text Label 11750 5300 0    50   ~ 0
 STEPPER_EN
 Wire Wire Line
 	10300 5200 9500 5200
@@ -716,12 +701,12 @@ Wire Wire Line
 $Comp
 L power:GND #PWR019
 U 1 1 5E872FEF
-P 7500 8600
-F 0 "#PWR019" H 7500 8350 50  0001 C CNN
-F 1 "GND" H 7505 8427 50  0000 C CNN
-F 2 "" H 7500 8600 50  0001 C CNN
-F 3 "" H 7500 8600 50  0001 C CNN
-	1    7500 8600
+P 7300 8600
+F 0 "#PWR019" H 7300 8350 50  0001 C CNN
+F 1 "GND" H 7305 8427 50  0000 C CNN
+F 2 "" H 7300 8600 50  0001 C CNN
+F 3 "" H 7300 8600 50  0001 C CNN
+	1    7300 8600
 	1    0    0    -1  
 $EndComp
 Connection ~ 7600 8600
@@ -972,7 +957,7 @@ U 1 1 5E9638EA
 P 15400 8300
 F 0 "C36" H 15515 8346 50  0000 L CNN
 F 1 "10/10" H 15515 8255 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0402" H 15438 8150 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 15438 8150 50  0001 C CNN
 F 3 "GRT155C80J225KE01D" H 15400 8300 50  0001 C CNN
 	1    15400 8300
 	1    0    0    -1  
@@ -983,7 +968,7 @@ U 1 1 5E9639A4
 P 15400 8700
 F 0 "C37" H 15515 8746 50  0000 L CNN
 F 1 "10/10" H 15515 8655 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0402" H 15438 8550 50  0001 C CNN
+F 2 "Capacitors_SMD:C_0805" H 15438 8550 50  0001 C CNN
 F 3 "GRT155C80J225KE01D" H 15400 8700 50  0001 C CNN
 	1    15400 8700
 	1    0    0    -1  
@@ -1325,76 +1310,8 @@ F 3 "" H 9850 3400 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 9850 3400
-$Comp
-L Device:Q_PNP_BEC Q2
-U 1 1 5EBB9C14
-P 4550 7750
-F 0 "Q2" H 4741 7704 50  0000 L CNN
-F 1 "MMBT3906-7-F" H 4741 7795 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 4750 7850 50  0001 C CNN
-F 3 "MMBT3906-7-F" H 4550 7750 50  0001 C CNN
-	1    4550 7750
-	1    0    0    1   
-$EndComp
-$Comp
-L Device:R_US R1
-U 1 1 5EBBA7C4
-P 3200 7200
-F 0 "R1" H 3268 7246 50  0000 L CNN
-F 1 "22k" H 3268 7155 50  0000 L CNN
-F 2 "Resistors_SMD:R_0402" V 3240 7190 50  0001 C CNN
-F 3 "~" H 3200 7200 50  0001 C CNN
-	1    3200 7200
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_US R2
-U 1 1 5EBBA8AD
-P 3200 7950
-F 0 "R2" H 3268 7996 50  0000 L CNN
-F 1 "100k" H 3268 7905 50  0000 L CNN
-F 2 "Resistors_SMD:R_0402" V 3240 7940 50  0001 C CNN
-F 3 "~" H 3200 7950 50  0001 C CNN
-	1    3200 7950
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_US R5
-U 1 1 5EBBA977
-P 4650 7200
-F 0 "R5" H 4718 7246 50  0000 L CNN
-F 1 "100" H 4718 7155 50  0000 L CNN
-F 2 "Resistors_SMD:R_0402" V 4690 7190 50  0001 C CNN
-F 3 "~" H 4650 7200 50  0001 C CNN
-	1    4650 7200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3200 8200 3200 8100
-$Comp
-L power:GND #PWR04
-U 1 1 5EC069C3
-P 3200 8200
-F 0 "#PWR04" H 3200 7950 50  0001 C CNN
-F 1 "GND" H 3205 8027 50  0000 C CNN
-F 2 "" H 3200 8200 50  0001 C CNN
-F 3 "" H 3200 8200 50  0001 C CNN
-	1    3200 8200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4650 7950 4650 8700
-Text Label 2400 8700 0    50   ~ 0
+Text Label 2400 7100 0    50   ~ 0
 OIL_TEMP_IN
-Wire Wire Line
-	4150 7750 4350 7750
-Wire Wire Line
-	3200 7050 3200 7000
-Connection ~ 3200 7000
-Wire Wire Line
-	4650 7050 4650 7000
-Wire Wire Line
-	4650 7350 4650 7400
 Wire Wire Line
 	7200 2000 7350 2000
 Connection ~ 7200 2000
@@ -1613,7 +1530,7 @@ F 3 "" H 3750 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 2050 1200 0    50   ~ 0
-For use with grounded-tip thermocouples, e.g. spark plug gasket mount.\nDual-supply moves common mode range below ground to provide noise\nrejection for noise caused by ground difference from tach supply to engine case.\nThe protection diodes effectively limit the common-mode to [-0.35V, 0.35V].\nThis should be OK -- but transient noise pickup from the spark plug wires\ncould cause CM to move outside this range. Needs testing.
+For use with grounded-tip thermocouples, e.g. spark plug gasket mount.\nDual-supply moves common mode range below ground to provide noise\nrejection for noise caused by ground difference from tach supply to engine case.
 Connection ~ 4450 1900
 Wire Wire Line
 	4450 1900 4900 1900
@@ -1626,66 +1543,6 @@ Wire Wire Line
 	3750 1900 4450 1900
 Wire Wire Line
 	7650 2000 7800 2000
-$Comp
-L Amplifier_Operational:AD8603 U2
-U 1 1 5F1D4105
-P 3850 7750
-F 0 "U2" H 3950 7650 50  0000 L CNN
-F 1 "TLV6001" H 3900 7550 50  0000 L CNN
-F 2 "TO_SOT_Packages_SMD:TSOT-23-5" H 3850 7750 50  0001 C CNN
-F 3 "http://www.analog.com/media/en/technical-documentation/data-sheets/AD8603_8607_8609.pdf" H 3850 7950 50  0001 C CNN
-	1    3850 7750
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR08
-U 1 1 5ECC6EEA
-P 3750 8050
-F 0 "#PWR08" H 3750 7800 50  0001 C CNN
-F 1 "GND" H 3755 7877 50  0000 C CNN
-F 2 "" H 3750 8050 50  0001 C CNN
-F 3 "" H 3750 8050 50  0001 C CNN
-	1    3750 8050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3200 7000 3750 7000
-Wire Wire Line
-	3450 7850 3550 7850
-Wire Wire Line
-	3550 7650 3200 7650
-Connection ~ 3200 7650
-Wire Wire Line
-	3200 7650 3200 7800
-$Comp
-L Device:R_POT RV1
-U 1 1 5F2C3A15
-P 2800 7200
-F 0 "RV1" H 2730 7246 50  0000 R CNN
-F 1 "100k" H 2730 7155 50  0000 R CNN
-F 2 "Potentiometers:Potentiometer_Trimmer_Bourns_3224J" H 2800 7200 50  0001 C CNN
-F 3 "3224J-1-104E" H 2800 7200 50  0001 C CNN
-	1    2800 7200
-	-1   0    0    -1  
-$EndComp
-Wire Wire Line
-	2650 7200 2650 7350
-Wire Wire Line
-	2650 7350 2800 7350
-Wire Wire Line
-	2800 7050 2800 7000
-Wire Wire Line
-	2800 7000 3200 7000
-Wire Wire Line
-	2800 7350 2800 7450
-Wire Wire Line
-	2800 7450 3200 7450
-Wire Wire Line
-	3200 7350 3200 7450
-Connection ~ 2800 7350
-Connection ~ 3200 7450
-Wire Wire Line
-	3200 7450 3200 7650
 $Comp
 L Device:Thermistor_PTC TH1
 U 1 1 5F339F96
@@ -1743,117 +1600,26 @@ Wire Wire Line
 	2850 5650 2750 5650
 Wire Wire Line
 	2750 5650 2750 5600
-Text Notes 2550 7250 2    50   ~ 0
-Trim for 5mA or calibrate \nto around 1.5V at 100C
-$Comp
-L Diode:BAS40-04 D2
-U 1 1 5F42DD23
-P 3400 8950
-F 0 "D2" H 3600 8900 50  0000 C CNN
-F 1 "BAS40-04" H 3150 8900 50  0000 C CNN
-F 2 "TO_SOT_Packages_SMD:SOT-23" H 3150 9250 50  0001 L CNN
-F 3 "http://www.vishay.com/docs/85701/bas40v.pdf" H 3280 9050 50  0001 C CNN
-	1    3400 8950
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	3750 9050 3700 9050
-$Comp
-L power:GND #PWR09
-U 1 1 5F42DD2B
-P 3750 9050
-F 0 "#PWR09" H 3750 8800 50  0001 C CNN
-F 1 "GND" H 3755 8877 50  0000 C CNN
-F 2 "" H 3750 9050 50  0001 C CNN
-F 3 "" H 3750 9050 50  0001 C CNN
-	1    3750 9050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	3400 8850 3400 8700
-$Comp
-L Device:R_US R8
-U 1 1 5F47AB7C
-P 5100 8700
-F 0 "R8" V 4895 8700 50  0000 C CNN
-F 1 "10k" V 4986 8700 50  0000 C CNN
-F 2 "Resistors_SMD:R_0402" V 5140 8690 50  0001 C CNN
-F 3 "~" H 5100 8700 50  0001 C CNN
-	1    5100 8700
-	0    1    1    0   
-$EndComp
 $Comp
 L Device:C C5
 U 1 1 5F47AE72
-P 5350 8950
-F 0 "C5" H 5465 8996 50  0000 L CNN
-F 1 "0.01/10" H 5465 8905 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0402" H 5388 8800 50  0001 C CNN
-F 3 "C0402C103K3RACTU" H 5350 8950 50  0001 C CNN
-	1    5350 8950
+P 4200 7300
+F 0 "C5" H 4315 7346 50  0000 L CNN
+F 1 "0.01/10" H 4315 7255 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 4238 7150 50  0001 C CNN
+F 3 "C0402C103K3RACTU" H 4200 7300 50  0001 C CNN
+	1    4200 7300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	5350 9100 5350 9200
-Wire Wire Line
-	5250 8700 5350 8700
-Wire Wire Line
-	5350 8700 5350 8800
-Wire Wire Line
-	4950 8700 4650 8700
-Connection ~ 4650 8700
-$Comp
-L power:GND #PWR014
-U 1 1 5F4C97CC
-P 5350 9200
-F 0 "#PWR014" H 5350 8950 50  0001 C CNN
-F 1 "GND" H 5355 9027 50  0000 C CNN
-F 2 "" H 5350 9200 50  0001 C CNN
-F 3 "" H 5350 9200 50  0001 C CNN
-	1    5350 9200
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5350 8700 5850 8700
-Connection ~ 5350 8700
-Text Label 5850 8700 2    50   ~ 0
+Text Label 5400 7100 2    50   ~ 0
 OIL_TEMP
 Text Label 2050 2100 0    50   ~ 0
 THERMOCOUPLE_IN-
 Text Label 2050 1900 0    50   ~ 0
 THERMOCOUPLE_IN+
 Wire Wire Line
-	3750 7450 3750 7000
-Connection ~ 3750 7000
-$Comp
-L Device:C C4
-U 1 1 5F536C74
-P 5200 7350
-F 0 "C4" H 5315 7396 50  0000 L CNN
-F 1 "0.1/16" H 5315 7305 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0402" H 5238 7200 50  0001 C CNN
-F 3 "C0402C104K4RACTU" H 5200 7350 50  0001 C CNN
-	1    5200 7350
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5200 7200 5200 7000
-$Comp
-L power:GND #PWR013
-U 1 1 5F56D1E4
-P 5200 7500
-F 0 "#PWR013" H 5200 7250 50  0001 C CNN
-F 1 "GND" H 5205 7327 50  0000 C CNN
-F 2 "" H 5200 7500 50  0001 C CNN
-F 3 "" H 5200 7500 50  0001 C CNN
-	1    5200 7500
-	1    0    0    -1  
-$EndComp
-Text Notes 1700 9300 0    50   ~ 0
-This isn't a great overvoltage protection circuit.\nHow do you protect without adding series R?
-Wire Wire Line
-	11600 4900 12050 4900
-Text Label 12050 4900 2    50   ~ 0
+	11600 4800 12050 4800
+Text Label 12050 4800 2    50   ~ 0
 TACH
 Text Label 8500 2000 2    50   ~ 0
 THERMOCOUPLE
@@ -1865,17 +1631,6 @@ Wire Wire Line
 	11600 4400 12200 4400
 Text Notes 13850 7800 2    50   ~ 0
 Thermocouple amplifier power supply
-Wire Wire Line
-	9400 5400 9400 6500
-Wire Wire Line
-	9400 6500 12600 6500
-Wire Wire Line
-	9400 5400 10300 5400
-Wire Wire Line
-	3750 7000 4650 7000
-Wire Wire Line
-	4650 7000 5200 7000
-Connection ~ 4650 7000
 Wire Wire Line
 	6450 2450 6500 2450
 Wire Wire Line
@@ -1899,25 +1654,25 @@ $EndComp
 $Comp
 L Device:C C1
 U 1 1 5F83ABF5
-P 2400 3250
-F 0 "C1" H 2515 3296 50  0000 L CNN
-F 1 "0.1/16" H 2515 3205 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0402" H 2438 3100 50  0001 C CNN
-F 3 "C0402C104K4RACTU" H 2400 3250 50  0001 C CNN
-	1    2400 3250
+P 850 3050
+F 0 "C1" H 965 3096 50  0000 L CNN
+F 1 "0.1/16" H 965 3005 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 888 2900 50  0001 C CNN
+F 3 "C0402C104K4RACTU" H 850 3050 50  0001 C CNN
+	1    850  3050
 	1    0    0    -1  
 $EndComp
-Text Label 2400 2900 3    50   ~ 0
+Text Label 850  2700 3    50   ~ 0
 +3.3VA
 $Comp
 L power:GND #PWR02
 U 1 1 5F88CC98
-P 2400 3400
-F 0 "#PWR02" H 2400 3150 50  0001 C CNN
-F 1 "GND" H 2405 3227 50  0000 C CNN
-F 2 "" H 2400 3400 50  0001 C CNN
-F 3 "" H 2400 3400 50  0001 C CNN
-	1    2400 3400
+P 850 3200
+F 0 "#PWR02" H 850 2950 50  0001 C CNN
+F 1 "GND" H 855 3027 50  0000 C CNN
+F 2 "" H 850 3200 50  0001 C CNN
+F 3 "" H 850 3200 50  0001 C CNN
+	1    850  3200
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1931,17 +1686,12 @@ F 3 "" H 1750 3100 50  0001 C CNN
 	1    1750 3100
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2150 2800 2750 2800
-Text Label 2750 2800 2    50   ~ 0
+Text Label 3500 2800 2    50   ~ 0
 COLD_JUNC
 Wire Wire Line
 	11600 4500 12050 4500
 Text Label 12050 4500 2    50   ~ 0
 COLD_JUNC
-Connection ~ 3400 8700
-Wire Wire Line
-	4650 8700 3400 8700
 Text Label 11200 2600 3    50   ~ 0
 +3.3VA
 Wire Wire Line
@@ -1958,26 +1708,17 @@ Connection ~ 5900 2800
 Wire Wire Line
 	6600 1550 6600 1850
 Wire Wire Line
-	2400 2900 2400 3100
+	850  2700 850  2900
 Text Label 1750 2250 3    50   ~ 0
 +3.3VA
 Wire Wire Line
 	1750 2250 1750 2500
-Text Label 2800 6650 3    50   ~ 0
-+3.3VA
-Wire Wire Line
-	2800 6650 2800 7000
-Connection ~ 2800 7000
-Text Label 2800 9050 0    50   ~ 0
-+3.3VA
-Wire Wire Line
-	2800 9050 3100 9050
 $Comp
 L Device:C C30
 U 1 1 5FCB9778
 P 11900 2250
 F 0 "C30" H 11750 2450 50  0000 L CNN
-F 1 "0.1/10" H 11750 2350 50  0000 L CNN
+F 1 "1.0/10" H 11750 2350 50  0000 L CNN
 F 2 "Capacitors_SMD:C_0402" H 11938 2100 50  0001 C CNN
 F 3 "C0402C104K4RACTU" H 11900 2250 50  0001 C CNN
 	1    11900 2250
@@ -2046,7 +1787,7 @@ JTDO
 Text Label 11550 1300 2    50   ~ 0
 JTDI
 Text Label 11550 1400 2    50   ~ 0
-JNTRST
+NRST
 Wire Wire Line
 	10650 1100 10550 1100
 Wire Wire Line
@@ -2296,16 +2037,14 @@ $EndComp
 $Comp
 L Connector_Generic:Conn_01x01 J3
 U 1 1 611147B4
-P 1600 8700
-F 0 "J3" H 1520 8917 50  0000 C CNN
-F 1 "Conn_01x01" H 1520 8826 50  0000 C CNN
-F 2 "footprints:mountinghole-1.5mm" H 1600 8700 50  0001 C CNN
-F 3 "~" H 1600 8700 50  0001 C CNN
-	1    1600 8700
+P 1600 7100
+F 0 "J3" H 1520 7317 50  0000 C CNN
+F 1 "Conn_01x01" H 1520 7226 50  0000 C CNN
+F 2 "footprints:mountinghole-1.5mm" H 1600 7100 50  0001 C CNN
+F 3 "~" H 1600 7100 50  0001 C CNN
+	1    1600 7100
 	-1   0    0    -1  
 $EndComp
-Wire Wire Line
-	1800 8700 3400 8700
 $Comp
 L Connector:Screw_Terminal_01x02 J1
 U 1 1 6113CE20
@@ -2332,8 +2071,6 @@ Wire Wire Line
 	13900 4400 14350 4400
 Wire Wire Line
 	13900 5800 14600 5800
-Text Notes 2850 8350 2    50   ~ 0
-Oil temp is a VDO resistance sensor with a grounded body.
 $Comp
 L Device:C C38
 U 1 1 5E6E7AB8
@@ -2358,20 +2095,13 @@ Wire Wire Line
 Wire Wire Line
 	12350 9000 11850 9000
 Connection ~ 11850 9000
-Wire Wire Line
-	3450 7850 3450 7400
-Wire Wire Line
-	3450 7400 4650 7400
-Connection ~ 4650 7400
-Wire Wire Line
-	4650 7400 4650 7550
 $Comp
 L Mechanical:MountingHole H1
 U 1 1 5E7E456E
 P 1000 4150
 F 0 "H1" H 1100 4196 50  0000 L CNN
 F 1 "MountingHole" H 1100 4105 50  0000 L CNN
-F 2 "Mounting_Holes:MountingHole_2.5mm" H 1000 4150 50  0001 C CNN
+F 2 "footprints:MountingHole_M3" H 1000 4150 50  0001 C CNN
 F 3 "~" H 1000 4150 50  0001 C CNN
 	1    1000 4150
 	1    0    0    -1  
@@ -2382,16 +2112,13 @@ U 1 1 5E80E704
 P 1000 4350
 F 0 "H2" H 1100 4396 50  0000 L CNN
 F 1 "MountingHole" H 1100 4305 50  0000 L CNN
-F 2 "Mounting_Holes:MountingHole_2.5mm" H 1000 4350 50  0001 C CNN
+F 2 "footprints:MountingHole_M3" H 1000 4350 50  0001 C CNN
 F 3 "~" H 1000 4350 50  0001 C CNN
 	1    1000 4350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	13600 6200 12600 6200
-Connection ~ 12600 6200
-Wire Wire Line
-	12600 6200 12600 6500
 Wire Wire Line
 	12600 5350 13600 5350
 Connection ~ 12600 5350
@@ -2400,8 +2127,6 @@ Wire Wire Line
 Wire Wire Line
 	12600 4650 13600 4650
 Connection ~ 12600 4650
-Wire Wire Line
-	12600 4650 12600 5350
 Wire Wire Line
 	14350 5350 14350 4400
 Wire Wire Line
@@ -2449,15 +2174,10 @@ F 3 "~" H 6900 8600 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	7600 8600 7500 8600
-Wire Wire Line
 	7600 8200 7500 8200
 Connection ~ 7500 8200
 Wire Wire Line
 	7500 8200 7100 8200
-Connection ~ 7500 8600
-Wire Wire Line
-	7500 8600 7100 8600
 $Comp
 L Device:C C39
 U 1 1 5EB05F50
@@ -2489,4 +2209,335 @@ F 3 "" H 6550 4450 50  0001 C CNN
 	1    6550 4450
 	1    0    0    -1  
 $EndComp
+$Comp
+L Device:R_US R1
+U 1 1 5E9C7DB6
+P 2500 2800
+F 0 "R1" V 2295 2800 50  0000 C CNN
+F 1 "10k" V 2386 2800 50  0000 C CNN
+F 2 "Resistors_SMD:R_0402" V 2540 2790 50  0001 C CNN
+F 3 "~" H 2500 2800 50  0001 C CNN
+	1    2500 2800
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C C4
+U 1 1 5E9C7DBD
+P 2800 3000
+F 0 "C4" H 2915 3046 50  0000 L CNN
+F 1 "0.01/10" H 2915 2955 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 2838 2850 50  0001 C CNN
+F 3 "C0402C103K3RACTU" H 2800 3000 50  0001 C CNN
+	1    2800 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 5E9C7DC4
+P 2800 3250
+F 0 "#PWR04" H 2800 3000 50  0001 C CNN
+F 1 "GND" H 2805 3077 50  0000 C CNN
+F 2 "" H 2800 3250 50  0001 C CNN
+F 3 "" H 2800 3250 50  0001 C CNN
+	1    2800 3250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2800 2800 2800 2850
+Wire Wire Line
+	2800 3150 2800 3250
+Connection ~ 2800 2800
+Wire Wire Line
+	2650 2800 2800 2800
+Wire Wire Line
+	2800 2800 3500 2800
+Wire Wire Line
+	2150 2800 2350 2800
+$Comp
+L Device:R_US R8
+U 1 1 5EB6E3B1
+P 6750 9400
+F 0 "R8" H 6550 9450 50  0000 L CNN
+F 1 "80.6k 0.1%" H 6250 9350 50  0000 L CNN
+F 2 "Resistors_SMD:R_0402" V 6790 9390 50  0001 C CNN
+F 3 "RP73PF1E80K6BTD" H 6750 9400 50  0001 C CNN
+	1    6750 9400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R21
+U 1 1 5EBC2EAF
+P 6750 9800
+F 0 "R21" H 6550 9850 50  0000 L CNN
+F 1 "18.2k 0.1%" H 6250 9750 50  0000 L CNN
+F 2 "Resistors_SMD:R_0402" V 6790 9790 50  0001 C CNN
+F 3 "RP73PF1E18K2BTD" H 6750 9800 50  0001 C CNN
+	1    6750 9800
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR049
+U 1 1 5EBED490
+P 6750 10000
+F 0 "#PWR049" H 6750 9750 50  0001 C CNN
+F 1 "GND" H 6755 9827 50  0000 C CNN
+F 2 "" H 6750 10000 50  0001 C CNN
+F 3 "" H 6750 10000 50  0001 C CNN
+	1    6750 10000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+12V #PWR048
+U 1 1 5EC17882
+P 6750 9200
+F 0 "#PWR048" H 6750 9050 50  0001 C CNN
+F 1 "+12V" H 6765 9373 50  0000 C CNN
+F 2 "" H 6750 9200 50  0001 C CNN
+F 3 "" H 6750 9200 50  0001 C CNN
+	1    6750 9200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6750 9250 6750 9200
+Wire Wire Line
+	6750 10000 6750 9950
+Text Label 7900 9600 2    50   ~ 0
+BATT_SENS
+Text Label 12050 4200 2    50   ~ 0
+BATT_SENS
+Wire Wire Line
+	11600 4200 12050 4200
+$Comp
+L Device:R_US R2
+U 1 1 5EDCA39B
+P 3150 6900
+F 0 "R2" H 3218 6946 50  0000 L CNN
+F 1 "2.2k 0.1%" H 3218 6855 50  0000 L CNN
+F 2 "Resistors_SMD:R_0805" V 3190 6890 50  0001 C CNN
+F 3 "ERA-6ARB222V" H 3150 6900 50  0001 C CNN
+	1    3150 6900
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR09
+U 1 1 5EDCA3A2
+P 4200 7550
+F 0 "#PWR09" H 4200 7300 50  0001 C CNN
+F 1 "GND" H 4205 7377 50  0000 C CNN
+F 2 "" H 4200 7550 50  0001 C CNN
+F 3 "" H 4200 7550 50  0001 C CNN
+	1    4200 7550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7100 8600 7300 8600
+Connection ~ 7300 8600
+Wire Wire Line
+	7300 8600 7600 8600
+$Comp
+L power:+12V #PWR08
+U 1 1 5F4EF532
+P 3150 6700
+F 0 "#PWR08" H 3150 6550 50  0001 C CNN
+F 1 "+12V" H 3165 6873 50  0000 C CNN
+F 2 "" H 3150 6700 50  0001 C CNN
+F 3 "" H 3150 6700 50  0001 C CNN
+	1    3150 6700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4200 7450 4200 7550
+$Comp
+L Device:R_US R5
+U 1 1 5F5D37A3
+P 3950 7100
+F 0 "R5" V 3745 7100 50  0000 C CNN
+F 1 "10k" V 3836 7100 50  0000 C CNN
+F 2 "Resistors_SMD:R_0402" V 3990 7090 50  0001 C CNN
+F 3 "~" H 3950 7100 50  0001 C CNN
+	1    3950 7100
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	1800 7100 3150 7100
+Wire Wire Line
+	3150 7050 3150 7100
+Connection ~ 3150 7100
+Wire Wire Line
+	3150 7100 3800 7100
+Wire Wire Line
+	3150 6750 3150 6700
+Wire Wire Line
+	4100 7100 4200 7100
+Wire Wire Line
+	4200 7150 4200 7100
+Text Notes 1300 6350 0    50   ~ 0
+We're already measuring voltage, so we'll use that measurement to \nback out the effect from battery voltage variation.
+$Comp
+L Device:D_Zener D2
+U 1 1 5F7666CE
+P 4750 7350
+F 0 "D2" V 4704 7429 50  0000 L CNN
+F 1 "SZMMBZ5222BLT1G" V 4795 7429 50  0000 L CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23" H 4750 7350 50  0001 C CNN
+F 3 "~" H 4750 7350 50  0001 C CNN
+	1    4750 7350
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4200 7100 4750 7100
+Connection ~ 4200 7100
+Connection ~ 4750 7100
+Wire Wire Line
+	4750 7100 5400 7100
+Wire Wire Line
+	4750 7100 4750 7200
+Wire Wire Line
+	4750 7500 4750 7550
+Wire Wire Line
+	4750 7550 4200 7550
+Connection ~ 4200 7550
+$Comp
+L Reference_Voltage:REF5020ADGK U2
+U 1 1 5F8766E5
+P 4400 9650
+F 0 "U2" H 3600 9900 50  0000 C CNN
+F 1 "REF5025ADGK" H 3800 9800 50  0000 C CNN
+F 2 "Housings_SSOP:MSOP-8_3x3mm_Pitch0.65mm" H 4450 9400 50  0001 L CIN
+F 3 "http://www.ti.com/lit/ds/symlink/ref5030.pdf" H 4400 9650 50  0001 C CIN
+	1    4400 9650
+	1    0    0    -1  
+$EndComp
+Text Notes 3450 10650 0    50   ~ 0
+Optional voltage reference. No external Vref pin,\nso we just use it as a cal value.\n\nERRATUM: needs output cap, 1-50uF (tested 10uF, doesn't work without)
+$Comp
+L power:GND #PWR014
+U 1 1 5F876CEB
+P 4300 9950
+F 0 "#PWR014" H 4300 9700 50  0001 C CNN
+F 1 "GND" H 4305 9777 50  0000 C CNN
+F 2 "" H 4300 9950 50  0001 C CNN
+F 3 "" H 4300 9950 50  0001 C CNN
+	1    4300 9950
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3.3V #PWR013
+U 1 1 5F877428
+P 4300 8900
+F 0 "#PWR013" H 4300 8750 50  0001 C CNN
+F 1 "+3.3V" H 4315 9073 50  0000 C CNN
+F 2 "" H 4300 8900 50  0001 C CNN
+F 3 "" H 4300 8900 50  0001 C CNN
+	1    4300 8900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5300 9550 4800 9550
+Text Label 5300 9550 2    50   ~ 0
+2V5_REF
+Wire Wire Line
+	11600 4600 12100 4600
+Text Label 12100 4600 2    50   ~ 0
+2V5_REF
+$Comp
+L Device:C C40
+U 1 1 5F8ECD0C
+P 4850 9100
+F 0 "C40" H 5000 9150 50  0000 L CNN
+F 1 "0.1/10" H 5000 9050 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 4888 8950 50  0001 C CNN
+F 3 "C0402C104K4RACTU" H 4850 9100 50  0001 C CNN
+	1    4850 9100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 8900 4850 8900
+Wire Wire Line
+	4850 8900 4850 8950
+Connection ~ 4300 8900
+$Comp
+L power:GND #PWR046
+U 1 1 5F98A7EF
+P 4850 9250
+F 0 "#PWR046" H 4850 9000 50  0001 C CNN
+F 1 "GND" H 4855 9077 50  0000 C CNN
+F 2 "" H 4850 9250 50  0001 C CNN
+F 3 "" H 4850 9250 50  0001 C CNN
+	1    4850 9250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 8900 4300 9350
+$Comp
+L Device:C C41
+U 1 1 5FAA3937
+P 4900 9950
+F 0 "C41" H 4550 9950 50  0000 L CNN
+F 1 "1.0/10" H 4550 9850 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 4938 9800 50  0001 C CNN
+F 3 "GCM155C71A105KE38D" H 4900 9950 50  0001 C CNN
+	1    4900 9950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 9750 4900 9750
+Wire Wire Line
+	4900 9750 4900 9800
+$Comp
+L power:GND #PWR047
+U 1 1 5FAF3907
+P 4900 10100
+F 0 "#PWR047" H 4900 9850 50  0001 C CNN
+F 1 "GND" H 4905 9927 50  0000 C CNN
+F 2 "" H 4900 10100 50  0001 C CNN
+F 3 "" H 4900 10100 50  0001 C CNN
+	1    4900 10100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6750 9550 6750 9600
+$Comp
+L Device:C C42
+U 1 1 5FB9E7A3
+P 7000 9800
+F 0 "C42" H 7115 9846 50  0000 L CNN
+F 1 "0.01/10" H 7115 9755 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0402" H 7038 9650 50  0001 C CNN
+F 3 "C0402C103K3RACTU" H 7000 9800 50  0001 C CNN
+	1    7000 9800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7000 9650 7000 9600
+Wire Wire Line
+	7000 9600 7900 9600
+Wire Wire Line
+	7000 9600 6750 9600
+Connection ~ 7000 9600
+Connection ~ 6750 9600
+Wire Wire Line
+	6750 9600 6750 9650
+Wire Wire Line
+	7000 9950 6750 9950
+Connection ~ 6750 9950
+Wire Wire Line
+	12850 5800 13300 5800
+Wire Wire Line
+	13000 5100 13300 5100
+Wire Wire Line
+	11600 5400 13000 5400
+Wire Wire Line
+	13000 5100 13000 5400
+Wire Wire Line
+	12600 4650 12600 5300
+Wire Wire Line
+	11600 5200 12850 5200
+Wire Wire Line
+	12850 5200 12850 5800
+Wire Wire Line
+	11600 5300 12600 5300
+Connection ~ 12600 5300
+Wire Wire Line
+	12600 5300 12600 5350
 $EndSCHEMATC

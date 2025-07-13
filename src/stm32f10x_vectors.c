@@ -34,16 +34,16 @@ static void __Default_Handler(void)
 void NMI_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));
 
 // All class of fault
-void HardFault_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));
+void HardFault_Handler(void) __attribute__ ((naked, interrupt, weak, alias("__Default_Handler")));
 
 // Memory management
-void MemManage_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));
+void MemManage_Handler(void) __attribute__ ((naked, interrupt, weak, alias("__Default_Handler")));
 
 // Pre-fetch fault, memory access fault
-void BusFault_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));
+void BusFault_Handler(void) __attribute__ ((naked, interrupt, weak, alias("__Default_Handler")));
 
 // Undefined instruction or illegal state
-void UsageFault_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));
+void UsageFault_Handler(void) __attribute__ ((naked, interrupt, weak, alias("__Default_Handler")));
 
 // Reserved 0x1C
 void __Reserved_0x1C_Handler(void) __attribute__ ((interrupt, weak, alias("__Default_Handler")));

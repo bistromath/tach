@@ -57,15 +57,6 @@ Reset_Handler:
 
 /*
 +-----------------------------------------------------------------------------+
-| Branch to low_level_init_0() function (.data and .bss are not initialized!)
-+-----------------------------------------------------------------------------+
-*/
-
-	ldr		r0, =low_level_init_0
-	blx		r0
-
-/*
-+-----------------------------------------------------------------------------+
 | Initialize .data section
 +-----------------------------------------------------------------------------+
 */
@@ -95,6 +86,10 @@ Reset_Handler:
 	strlo	r0, [r1], #4
 	blo		1b
 
+/* Branch to clock initialization */
+	ldr		r0, =SystemInit
+	blx		r0
+
 /*
 +-----------------------------------------------------------------------------+
 | Call C++ constructors for global and static objects
@@ -102,21 +97,8 @@ Reset_Handler:
 */
 	ldr		r0, =__libc_init_array
 	blx		r0
-
 /*
-+-----------------------------------------------------------------------------+
-| Branch to low_level_init_1() function
-+-----------------------------------------------------------------------------+
-*/
 
-	ldr		r0, =low_level_init_1
-	blx		r0
-
-/* Branch to clock initialization */
-/*	ldr		r0, =SystemInit
-	blx		r0 */
-
-/*
 +-----------------------------------------------------------------------------+
 | Branch to main() with link
 +-----------------------------------------------------------------------------+
@@ -142,38 +124,6 @@ Reset_Handler:
 */
 
 	b		.
-
-/*
-+=============================================================================+
-| __default_low_level_init() - replacement for undefined low_level_init_0()
-| and/or low_level_init_1(). This function just returns.
-+=============================================================================+
-*/
-
-.text
-.balign 2
-.syntax unified
-.thumb
-.thumb_func
-.global __default_low_level_init
-
-__default_low_level_init:
-	bx		lr
-
-/*
-+=============================================================================+
-| assign undefined low_level_init_0() and/or low_level_init_1() to
-| __default_low_level_init()
-+=============================================================================+
-*/
-
-.weak	low_level_init_0
-.global	low_level_init_0
-.set	low_level_init_0, __default_low_level_init
-
-.weak	low_level_init_1
-.global	low_level_init_1
-.set	low_level_init_1, __default_low_level_init
 
 /******************************************************************************
 * END OF FILE

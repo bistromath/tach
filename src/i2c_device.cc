@@ -24,12 +24,12 @@ void i2c_device::init(void)
 	case I2C1_BASE:
 		gpioinit.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7;
 		GPIO_Init(GPIOB, &gpioinit);
-		NVIC_InitStructure.NVIC_IRQChannel = I2C2_EV_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannel = I2C1_EV_IRQn;
 		NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+		NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
 		NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 		NVIC_Init(&NVIC_InitStructure);
-		NVIC_InitStructure.NVIC_IRQChannel = I2C2_ER_IRQn;
+		NVIC_InitStructure.NVIC_IRQChannel = I2C1_ER_IRQn;
 		NVIC_Init(&NVIC_InitStructure);
 		break;
 	case I2C2_BASE:

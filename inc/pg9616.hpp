@@ -35,10 +35,10 @@ public:
 
 	void init(void); //initializes the display; may take other options
 
-	void print(u8 display, const char *string, Display_FontSizeTypeDef size, u8 start_page, u8 start_col); //prints string on the display, left-justified
-	void print(u8 display, signed long number, Display_FontSizeTypeDef size, u8 width, u8 start_page, u8 start_col); //prints a number on the display, left-justified
-	void print_base(u8 display, signed long number, u8 base, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col);
-	void print(u8 display, float number, Display_FontSizeTypeDef size, u8 width, u8 start_page, u8 start_col, bool plusminus, u8 max_decimals=255);
+	void print(u8 display, const char *string, Display_FontSizeTypeDef size, u8 start_page, u8 start_col, s8 offset=0); //prints string on the display, left-justified
+	void print(u8 display, signed long number, Display_FontSizeTypeDef size, u8 width, u8 start_page, u8 start_col, s8 offset=0); //prints a number on the display, left-justified
+	void print_base(u8 display, signed long number, u8 base, Display_FontSizeTypeDef font, u8 width, u8 start_page, u8 start_col, s8 offset=0);
+	void print(u8 display, float number, Display_FontSizeTypeDef size, u8 width, u8 start_page, u8 start_col, bool plusminus, u8 max_decimals=255, s8 offset=0);
 	void Show_Pattern(u8 display, const unsigned char Data_Pointer[][2], unsigned char start_page, unsigned char start_col, unsigned char width);
 	void showlogo(u8 display) { Show_Pattern(display, logo, 0, 42, 12); }
 	void showname(u8 display) { Show_Pattern(display, logoname, 0, 23, 50); }

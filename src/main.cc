@@ -63,22 +63,22 @@ const float temp_iir_gain = 0.02;
 const float rpm_iir_gain = 0.1;
 
 //tach calibration
-const uint32_t needlescalar=14800;
+const uint32_t needlescalar=14550;
 
 /* PIN DEFINITIONS */
 const pindef stepper::outputs[] = {
-            {GPIOA, GPIO_Pin_11},
             {GPIOA, GPIO_Pin_10},
+            {GPIOA, GPIO_Pin_12},
             {GPIOA, GPIO_Pin_9},
             {GPIOA, GPIO_Pin_8}
 };
 
 const pindef stepper::enables[] = {
-            {GPIOB, GPIO_Pin_12},
+            {GPIOB, GPIO_Pin_11},
 };
 
 const pindef pg9616::resetpin = {GPIOB, GPIO_Pin_2};
-const pindef adc::adcpins = {GPIOA, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3};
+const pindef adc::adcpins = {GPIOA, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4};
 
 
 /* voltage conversion functions
@@ -86,7 +86,7 @@ const pindef adc::adcpins = {GPIOA, GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_
 */
 /*******************************/
 float conv_batt_volt(float voltage) {
-    return 4.9705*voltage;
+    return 5.428571*voltage;
 }
 
 //christ can you imagine how long this takes to run
@@ -96,8 +96,14 @@ float conv_cold_junc_temp(float voltage) {
 }
 
 //this outputs deg F, since it's used directly for display
-float conv_oil_temp(float voltage) {
-    return 144.796*pow(voltage, -0.3163449);
+//needs to be redone since we're using battery voltage as the ref now.
+//it's 63.952*v^-0.32915 for 1v
+//the exp stays the same no matter the v
+//so temp(F) = 773.884R^-0.3163449
+//this requires batt voltage to work. can't trivially scale to Vbat.
+float conv_oil_temp(float voltage, float batt_voltage) {
+    const float vrel = voltage / batt_voltage;
+    return 773.88414723*pow((vrel*2200)/(1-vrel), -0.31644914);
 }
 
 //note: this does not compensate for cold junction temp.
@@ -129,7 +135,7 @@ int main(void) {
 
     adc adc1;
     adc1.reg_converter(0, &conv_batt_volt);
-    adc1.reg_converter(1, &conv_oil_temp);
+    //adc1.reg_converter(1, &conv_oil_temp);
     adc1.reg_converter(2, &conv_cht);
     adc1.reg_converter(3, &conv_cold_junc_temp);
 
@@ -154,8 +160,9 @@ int main(void) {
 
         //moving avg filter for sensors
         filtered_rpm = filtered_rpm - rpm_iir_gain*(filtered_rpm-thisrpm);
-        filtered_voltage = filtered_voltage - voltage_iir_gain*(filtered_voltage-adc1.get_value(0));
-        filtered_oil_temp = filtered_oil_temp - temp_iir_gain*(filtered_oil_temp-adc1.get_value(1));
+        float batt_volt = adc1.get_value(0);
+        filtered_voltage = filtered_voltage - voltage_iir_gain*(filtered_voltage-batt_volt);
+        filtered_oil_temp = filtered_oil_temp - temp_iir_gain*(filtered_oil_temp-conv_oil_temp(adc1.get_voltage(1),batt_volt));
         filtered_coldjunc_temp = filtered_coldjunc_temp - temp_iir_gain*(filtered_coldjunc_temp-adc1.get_value(3));
         filtered_cht = filtered_cht - temp_iir_gain*(filtered_cht-adc1.get_value(2));
         cht = (filtered_cht+filtered_coldjunc_temp)*9/5 + 32;

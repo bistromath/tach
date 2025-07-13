@@ -20,24 +20,20 @@ u16 stepper::target_position;
 volatile u16 stepper::current_position;
 volatile s16 stepper::current_rate;
 volatile bool stepper::current_direction;
-//const s16 stepper::rate_steps[8] = {0, 235, 350, 425, 475, 535, 575, 600}; //the acceleration steps
 
-//this is the rate steps in timer ticks instead of Hz, assuming a 18MHz clock rate.
-//const s16 stepper::rate_steps[8] = { 38297, 38297, 25714, 21176, 18947, 16822, 15652, 15000 };
-//this version is based on keeping the acceleration rate per FULL STEP, rather than third-step.
-//const u16 stepper::rate_steps[20] = { 38297, 38297, 32855, 28731, 25714, 23591, 22149, 21176, 20285, 19570, 18947, 18185, 17466, 16822, 16347, 15963, 15652, 15399, 15187, 15000 };
+const u16 stepper::prescaler = 5;
 
-const u16 stepper::rate_steps[] = { 57447, 38298, 32927, 28877, 25714, 24000, 22500, 21176, 20377, 19636, 18947, 18182, 17476, 16822, 16413, 16024, 15652, 15429, 15211, 15000, 15000, 15000 };
-const u16 NUM_STEPS=22;
+const u16 stepper::rate_steps[] = {57117, 28558, 19039, 15470, 13502, 11978, 10881, 10173, 9551, 9001, 8635, 8297, 7985, 7737, 7524, 7323, 7145, 7001, 6862, 6729};
+const u16 NUM_STEPS=20;
 
-//this version is based on full-steps at the FSS, and requires a 18MHz clock rate.
-//const s16 stepper::rate_steps[8] = { 36000, 36000, 36000, 36000, 36000, 36000, 36000, 36000 };
+//const u16 stepper::rate_steps[] = {31250, 31250};
+//const u16 NUM_STEPS=2;
 
 const bool stepper::commutation_chart[4][6] = {
 		{1, 1, 1, 0, 0, 0},
 		{0, 0, 1, 1, 1, 0},
-		{1, 0, 0, 0, 1, 1},
-		{0, 0, 1, 1, 1, 0}
+		{0, 0, 1, 1, 1, 0},
+		{1, 0, 0, 0, 1, 1}
 };
 
 stepper::stepper() {
@@ -62,9 +58,9 @@ stepper::stepper() {
 	for(int i = 0; i < 4; i++)
 	{
 		GPIO_ResetBits(outputs[i].port, outputs[i].pin);
-		GPIO_SetBits(enables[i].port, enables[i].pin);
 	}
 
+    GPIO_SetBits(enables[0].port, enables[0].pin);
 	//set up a timer to be ready to do commutation for us.
 	//preload it, set for countdown, use the ISR to do the commutating.
 
@@ -72,14 +68,13 @@ stepper::stepper() {
 	tim1init.TIM_ClockDivision = TIM_CKD_DIV1;
 	tim1init.TIM_CounterMode = TIM_CounterMode_Up;
 	tim1init.TIM_Period = rate_steps[0];
-	tim1init.TIM_Prescaler = 1;
+	tim1init.TIM_Prescaler = stepper::prescaler;
 	tim1init.TIM_RepetitionCounter = 0;
 
 	TIM_TimeBaseInit(TIM1, &tim1init);
 	TIM_SetCounter(TIM1, 0);
 	//now configure the interrupts (on update)
 	TIM_ITConfig(TIM1, TIM_IT_Update, ENABLE);
-	//TIM_UpdateDisableConfig(TIM1, ENABLE);
 	TIM_UpdateRequestConfig(TIM1, TIM_UpdateSource_Regular);
 
 	NVIC_InitTypeDef nvicinit;
@@ -91,7 +86,6 @@ stepper::stepper() {
 
 	TIM_Cmd(TIM1, ENABLE);
 
-	current_rate = 0;
 	home();
 }
 
@@ -128,24 +122,19 @@ void stepper::home(void) {
 	extern void delay_ms(u16);
 	TIM_Cmd(TIM1, DISABLE);
 	TIM_SetCounter(TIM1, 0);
-	//delay_ms(100);
-	current_position = max_position;
+	TIM_PrescalerConfig(TIM1, stepper::prescaler+1, TIM_PSCReloadMode_Immediate);
+	current_position = max_position+100;
 	current_rate = 0;
-	seek(0);
-	TIM_PrescalerConfig(TIM1, 2, DISABLE); //move at half rate
 	TIM_Cmd(TIM1, ENABLE);
-	while(current_position > 0);
-	TIM_Cmd(TIM1, DISABLE);
-	TIM_SetCounter(TIM1, 0);
-	TIM_PrescalerConfig(TIM1, 1, DISABLE);
-//	delay_ms(200);
-	TIM_Cmd(TIM1, ENABLE);
+    seek(0); while(current_position > 0);
+	TIM_PrescalerConfig(TIM1, stepper::prescaler, TIM_PSCReloadMode_Immediate);
+	seek(max_position); while(current_position < max_position);
+    seek(0); while(current_position > 0);
 }
 
-void stepper::seek(float position) {
-	if(position > 1.0) position = 1.0;
-	if(position < 0.0) position = 0.0;
-	target_position = position * float(max_position);
+void stepper::seek(u16 position) {
+	if(position > max_position) position = max_position;
+	target_position = position;
 }
 
 void stepper::isr_handler(void) {
@@ -182,7 +171,7 @@ void stepper::isr_handler(void) {
 		else step_back();
 	}
 
-	s16 preload = rate_steps[current_rate]/2; //TODO FIXME DIV2 BECAUSE CLK IS 9MHz NOW
+	s16 preload = rate_steps[current_rate];
 
 	//so we calculate the preload for the timer ISR, based on that rate
 	//stop the timer

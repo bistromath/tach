@@ -31,7 +31,7 @@ OUTPUT_ARCH(arm);
 /* Thread mode can use main stack (default) or process stack - selected in CONTROL special register */
 
 __main_stack_size = 16384;
-__process_stack_size = 16384;
+__process_stack_size = 1024;
 
 PROVIDE(__main_stack_size = __main_stack_size);
 PROVIDE(__process_stack_size = __process_stack_size);
@@ -44,11 +44,9 @@ PROVIDE(__process_stack_size = __process_stack_size);
 
 MEMORY
 {
-	rom (rx)	: org = 0x08003000, len = 256k - 0x3000
-	ram (rwx)	: org = 0x20000000, len = 48k
-   statedata (r) : ORIGIN = 0x08020000, LENGTH = 0x800
-     caldata (r) : ORIGIN = 0x08020800, LENGTH = 0x800
-caltabledata (r) : ORIGIN = 0x08021000, LENGTH = 0x2000
+    rom (rx)	: org = 0x08000000, len = 128k - 0x0000
+    ram (rwx)	: org = 0x20000000, len = 20k
+   /*statedata (r) : ORIGIN = 0x08020000, LENGTH = 0x800*/
 }
 
 __rom_start = ORIGIN(rom);
@@ -134,24 +132,14 @@ SECTIONS
 		__text_end = .;
 		PROVIDE(__text_end = __text_end);
 	} > rom AT > rom
-    
+   /* 
 	.state_data : ALIGN(4)
 	{
 		_statedata = .;
 		PROVIDE(_statedata = _statedata);
 		*(.state_data*)
 	} >statedata
-	
-	.cal_data : ALIGN(4)
-	{
-		*(.cal_data*)
-	} >caldata
-	
-	.cal_table_data : ALIGN(4)
-	{
-		*(.cal_table_data*)
-	} >caltabledata
-
+*/	
 	. = ALIGN(4);
 	__exidx_start = .;
 	PROVIDE(__exidx_start = __exidx_start);
@@ -177,6 +165,8 @@ SECTIONS
 		*(.data .data.* .gnu.linkonce.d.*)
 
 		. = ALIGN(4);
+        *(.ramfunc);
+        . = ALIGN(4);
 		__data_end = .;
 		PROVIDE(__data_end = __data_end);
 	} > ram AT > rom

@@ -64,6 +64,7 @@ void systick::dealloc()
 	enabled = 0;
 }
 //if you really want to make this fast, run it in RAM
+//FIXME: this probably needs to be updated now that our clock has changed
 u32 systick::get_elapsed_us() const
 {
 	static u32 i;
